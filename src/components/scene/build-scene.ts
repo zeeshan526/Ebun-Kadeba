@@ -403,21 +403,20 @@ export function buildScene(
     }
     return g;
   };
-  // down the back
-  const backBraids = braidSet(
-    14,
-    (u) => new THREE.Vector3((u - 0.5) * 0.26, 0.02 - Math.abs(u - 0.5) * 0.1, -0.13 + Math.abs(u - 0.5) * 0.05),
-    (u) => new THREE.Vector3((u - 0.5) * 0.3, -0.58 - Math.sin(u * 3.1) * 0.05, -0.25),
+  // high ponytail: braids gathered at the crown, pivoting at the tie
+  const ponytail = group(head, [0, 0.1, -0.15]);
+  ponytail.rotation.x = 0.1;
+  mesh(sph(0.045), M.hair, ponytail, [0, 0, -0.01], [1, 0.9, 1]);
+  mesh(new THREE.TorusGeometry(0.03, 0.012, 12, 32), M.pink, ponytail, [0, -0.005, -0.04], [1, 1, 1], [0.5, 0, 0]);
+  braidSet(
+    12,
+    (u) => {
+      const a = u * Math.PI * 2;
+      return new THREE.Vector3(Math.cos(a) * 0.022, -0.01 + Math.sin(a) * 0.022, -0.05);
+    },
+    (u) => new THREE.Vector3((u - 0.5) * 0.2, -0.62 - Math.sin(u * 3.1) * 0.05, -0.09),
     0.7,
-    head,
-  );
-  // over her right shoulder, in front
-  const frontBraids = braidSet(
-    5,
-    (u) => new THREE.Vector3(0.13 + u * 0.03, -0.02 - u * 0.03, -0.04 + u * 0.02),
-    (u) => new THREE.Vector3(0.15 + u * 0.04, -0.5 - u * 0.05, 0.1 + u * 0.03),
-    0.55,
-    head,
+    ponytail,
   );
 
   // ---------- animation ----------
@@ -443,9 +442,8 @@ export function buildScene(
     chest.rotation.x = 0.04;
     head.rotation.y = 0.1 * Math.sin(w) + 0.05;
     head.rotation.z = 0.03 * Math.sin(w);
-    backBraids.rotation.x = 0.08 + 0.06 * Math.sin(2 * w - 0.8);
-    backBraids.rotation.z = 0.05 * Math.sin(w - 0.6);
-    frontBraids.rotation.x = -0.05 + 0.05 * Math.sin(2 * w - 0.6);
+    ponytail.rotation.x = 0.1 + 0.08 * Math.sin(2 * w - 0.8);
+    ponytail.rotation.z = 0.09 * Math.sin(w - 0.6);
     hoops.forEach((h, i) => {
       h.rotation.x = 0.35 * Math.sin(2 * w - 0.7 + i);
     });
